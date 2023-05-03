@@ -31,13 +31,16 @@ MMSI,BaseDateTime,LAT,LON,SOG,COG,Heading,VesselName,IMO,CallSign,VesselType,Sta
   
 Kafka будем использовать в качестве шины данных.  
 Postgres c расширением Postgis для хранения данных.  
-Qgis для визуализации.  
+Qgis для визуализации.
   
 ### Стек:
 - Spark
 - Kafka
 - Postgres(PostGis)
 - QGIS
+
+### Схема проекта  
+![alt text](img/sc.png)
 
 ## Подготовка
 
@@ -106,7 +109,7 @@ MMSI,BaseDateTime,LAT,LON,SOG,COG,Heading,VesselName,IMO,CallSign,VesselType,Sta
 ./kafka-topics.sh -create -topic ais -bootstrap-server localhost:29092
 ```
 Далее в постгресе создаем следующие сущности  
-```agsl
+```
 --Таблица приемник "сырых" данных, пишутся все данные пришедшие в топик без изменения 
 create table ais_data (
                       MMSI Int,
@@ -128,7 +131,7 @@ create table ais_data (
                       TransceiverClass varchar(255)
 )
 ```  
-```agsl
+```
 -- Таблица с обнаруженными сближениями судов, где haversine расстояние между точками
 create table catched (
 	MMSI1 Int,
@@ -136,7 +139,7 @@ create table catched (
 	haversine numeric
 )
 ```  
-````agsl
+````
 -- Вьюшка для визуализации полных маршрутов кораблей в QGIS
 CREATE VIEW anomaly_routes_view
  AS
@@ -175,6 +178,13 @@ CREATE VIEW anomaly_routes_view
 Приложение находится в классе kapp.Kappy  
 ## Визуализация  
 
+Для визуализации будем использовать QGIS  
+Подключаем в качестве источника наш постгрес с постгисом  и в качестве слоя данных вьюшку
+anomaly_routes_view. Добавим расцветку разных маршрутов(свойства->стиль->символизация по уникальным значениям)  
+Сохраненный проект в папке Qgis.  
+Пойманные аномалии:
+![alt text](img/anomaly1.png)  
+![alt text](img/anomaly2.png)  
 
 
 

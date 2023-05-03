@@ -6,7 +6,7 @@ import org.apache.spark.sql.streaming.Trigger.ProcessingTime
 import org.apache.spark.sql.types.LongType
 import org.apache.spark.sql.{DataFrame, Encoders, SaveMode, SparkSession, functions}
 import utils.AisRecordTime
-import utils.Config.{Distance, postgresqlSinkOptionsAis, postgresqlSinkOptionsCatched}
+import utils.Config.{Distance, maintopic, postgresqlSinkOptionsAis, postgresqlSinkOptionsCatched}
 
 import scala.math.{asin, cos, pow, sin, sqrt}
 
@@ -120,7 +120,7 @@ object Kappy {
       .readStream
       .format("kafka")
       .option("kafka.bootstrap.servers", "localhost:29092")
-      .option("subscribe", "mytopic")
+      .option("subscribe", maintopic)
       .option("includeTimestamp", value = true)
       .load()
 
